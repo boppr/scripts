@@ -1,3 +1,4 @@
+#!/bin/bash
 yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 yum -y install yum-utils
 yum-config-manager --disable remi-php54
@@ -11,8 +12,8 @@ systemctl enable mariadb.service
 
 mysql -u root <<-EOF
 create database wordpress;
-create user ‘wordpressuser’@’localhost’ identified by password ‘password’;
-GRANT ALL PRIVILEGES ON wordpress.* TO wordpress@localhost;
+CREATE USER wordpressuser@localhost IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON wordpress.* TO wordpressuser@localhost IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
 EOF
 
@@ -33,8 +34,13 @@ cp -R ~/wordpress/* /var/www/html/
 mkdir /var/www/html/wp-content/uploads
 
 cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
-sed -i "/DB_HOST/s/'[^']*'/'localhost'/2" wp-config.php
-sed -i "/DB_NAME/s/'[^']*'/'wordpress'/2" wp-config.php
-sed -i "/DB_USER/s/'[^']*'/'wordpressuser'/2" wp-config.php
-sed -i "/DB_PASSWORD/s/'[^']*'/'password'/2" wp-config.php
+sed -i "/DB_HOST/s/'[^']*'/'localhost'/2" /var/www/html/wp-config.php
+sed -i "/DB_NAME/s/'[^']*'/'wordpress'/2" /var/www/html/wp-config.php
+sed -i "/DB_USER/s/'[^']*'/'wordpressuser'/2" /var/www/html/wp-config.php
+sed -i "/DB_PASSWORD/s/'[^']*'/'password'/2" /var/www/html/wp-config.php
 chown -R apache:apache /var/www/html/*
+
+firewall-cmd --zone=public --add-service=http
+firewall-cmd --zone=public --permanent --add-service=http
+firewall-cmd --zone=public --add-service=https
+firewall-cmd --zone=public --permanent --add-service=https

@@ -3,7 +3,7 @@ yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 yum -y install yum-utils
 yum-config-manager --disable remi-php54
 yum-config-manager --enable remi-php73
-yum -y install httpd mariadb mariadb-server php php-common php-mysql php-gd php-xml php-mbstring php-mcrypt
+yum -y install httpd mariadb mariadb-server php php-common php-mysql php-gd php-xml php-mbstring php-mcrypt wget
 
 systemctl start httpd.service
 systemctl enable httpd.service
